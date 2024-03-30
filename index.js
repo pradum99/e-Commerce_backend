@@ -23,23 +23,25 @@ app.get("/", (req, res) => {
 })
 
 // Image Storage Engine
+const renderServerURL = 'https://e-commerce-swl3.onrender.com';
+
 const storage = multer.diskStorage({
     destination: './upload/images',
     filename: (req, file, cb) => {
-        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+        cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
     }
-})
+});
 
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 // Create Upload Endpoint for image
-app.use('/image', express.static('upload/images'))
+app.use('/image', express.static('upload/images'));
 app.post("/upload", upload.single('product'), (req, res) => {
     res.json({
         success: 1,
-        image_url: `http://localhost:${port}/image/${req.file.filename}`
-    })
-})
+        image_url: `${renderServerURL}/image/${req.file.filename}`
+    });
+});
 
 // Schema for Creating Products
 const Product = mongoose.model("Product", {
